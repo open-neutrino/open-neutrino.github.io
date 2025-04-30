@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkneutrino=self.webpackChunkneutrino||[]).push([[8947],{6600:t=>{t.exports=JSON.parse('{"authors":[{"name":"Neutrino Team","title":"will be updated","url":"https://github.com/neutrino-gpu","socials":{"github":"https://github.com/neutrino-gpu"},"key":"anon","page":null,"count":0}]}')}}]);
