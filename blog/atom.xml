@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?><?xml-stylesheet type="text/xsl" href="atom.xsl"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-    <id>https://neutrino.github.io/blog</id>
+    <id>https://neutrino-gpu.github.io/blog</id>
     <title>Neutrino Blog</title>
     <updated>2024-12-24T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
-    <link rel="alternate" href="https://neutrino.github.io/blog"/>
+    <link rel="alternate" href="https://neutrino-gpu.github.io/blog"/>
     <subtitle>Neutrino Blog</subtitle>
-    <icon>https://neutrino.github.io/static/img/favicon.ico</icon>
+    <icon>https://neutrino-gpu.github.io/static/img/favicon.ico</icon>
     <entry>
         <title type="html"><![CDATA[PyTorch One-Line Optimization]]></title>
-        <id>https://neutrino.github.io/blog/first-blog-post</id>
-        <link href="https://neutrino.github.io/blog/first-blog-post"/>
+        <id>https://neutrino-gpu.github.io/blog/first-blog-post</id>
+        <link href="https://neutrino-gpu.github.io/blog/first-blog-post"/>
         <updated>2024-12-24T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Hello, welcome to Neutrino blogs!]]></summary>
         <content type="html"><![CDATA[<p>Hello, welcome to Neutrino blogs!
 This blog series will continuously post our new findings on GPU programming and computing via <code>neutrino</code>,
 our fine-grained and programmable GPU kernel observability platform like <a href="https://ebpf.io/" target="_blank" rel="noopener noreferrer">eBPF</a> for Linux kernel!</p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="observing-pytorch-performance-issue-with-neutrino">Observing PyTorch Performance Issue with Neutrino!<a href="https://neutrino.github.io/blog/first-blog-post#observing-pytorch-performance-issue-with-neutrino" class="hash-link" aria-label="Direct link to Observing PyTorch Performance Issue with Neutrino!" title="Direct link to Observing PyTorch Performance Issue with Neutrino!">​</a></h3>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="observing-pytorch-performance-issue-with-neutrino">Observing PyTorch Performance Issue with Neutrino!<a href="https://neutrino-gpu.github.io/blog/first-blog-post#observing-pytorch-performance-issue-with-neutrino" class="hash-link" aria-label="Direct link to Observing PyTorch Performance Issue with Neutrino!" title="Direct link to Observing PyTorch Performance Issue with Neutrino!">​</a></h3>
 <p>As a GPU observability platform, <code>neutrino</code> provides an similar user interface as its CPU siblings <a href="https://man7.org/linux/man-pages/man1/strace.1.html" target="_blank" rel="noopener noreferrer">strace</a>/<a href="https://valgrind.org/" target="_blank" rel="noopener noreferrer">valgrind</a> for profiling nearly any computing workload on GPU, like Deep Learning with PyTorch.
 To demonstrate its power, how about let's started with an crazily easy one like the following line:</p>
 <div class="language-python codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><div class="codeBlockTitle_Ktv7">oneline.py</div><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-python codeBlock_bY9V thin-scrollbar" style="color:#393A34;background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#393A34"><span class="token plain">torch</span><span class="token punctuation" style="color:#393A34">.</span><span class="token plain">zeros</span><span class="token punctuation" style="color:#393A34">(</span><span class="token punctuation" style="color:#393A34">(</span><span class="token number" style="color:#36acaa">4096</span><span class="token punctuation" style="color:#393A34">,</span><span class="token plain"> </span><span class="token number" style="color:#36acaa">4096</span><span class="token punctuation" style="color:#393A34">)</span><span class="token punctuation" style="color:#393A34">,</span><span class="token plain"> dtype</span><span class="token operator" style="color:#393A34">=</span><span class="token plain">torch</span><span class="token punctuation" style="color:#393A34">.</span><span class="token plain">float16</span><span class="token punctuation" style="color:#393A34">,</span><span class="token plain"> device</span><span class="token operator" style="color:#393A34">=</span><span class="token string" style="color:#e3116c">"cuda"</span><span class="token punctuation" style="color:#393A34">)</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="Copy code to clipboard" title="Copy" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
@@ -29,7 +29,7 @@ let's answer this question in the experiemental way with <code>neutrino</code> a
 <p>Here <code>neutrino</code> suggests a kernel named <code>vectorized_elementwise...</code> (weird name comes from C++ template) is executed in <code>torch.zeros</code>.
 This behavior is expected as the kernel is used to fill allocated buffer with 0 for correct initialization.
 But the poor performance statistics is not expected, the kernel spend more than 25% time on block scheduling! What a waste of time and FLOPs!</p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="whats-block-scheduling-cost">What's block scheduling cost?<a href="https://neutrino.github.io/blog/first-blog-post#whats-block-scheduling-cost" class="hash-link" aria-label="Direct link to What's block scheduling cost?" title="Direct link to What's block scheduling cost?">​</a></h3>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="whats-block-scheduling-cost">What's block scheduling cost?<a href="https://neutrino-gpu.github.io/blog/first-blog-post#whats-block-scheduling-cost" class="hash-link" aria-label="Direct link to What's block scheduling cost?" title="Direct link to What's block scheduling cost?">​</a></h3>
 <p>Now it's time for some GPU programming internals.
 Most compute platform like NVIDIA CUDA and AMD ROCm formulate GPU threads into blocks like 128 threads per block in this example.
 And blocks will be scheduled onto GPUs to run parallely.
@@ -40,7 +40,7 @@ only 648 block can be executed parallely, far lower than required 65536.
 In such a case, blocks will be executed sequentially other than parallely, i.e., the 649-th block need to wait for an executing block finished to run.</p>
 <p>Similar to context switch in CPU, GPU also spends additional time (hundreds of cycles) on finalizing an executing a block and scheduling next block.
 And such scheduling time is called <em>block scheduling cost</em> here as the time is wasted from the perspective of computing:</p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="how-neutrino-measure-this">How Neutrino measure this?<a href="https://neutrino.github.io/blog/first-blog-post#how-neutrino-measure-this" class="hash-link" aria-label="Direct link to How Neutrino measure this?" title="Direct link to How Neutrino measure this?">​</a></h3>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="how-neutrino-measure-this">How Neutrino measure this?<a href="https://neutrino-gpu.github.io/blog/first-blog-post#how-neutrino-measure-this" class="hash-link" aria-label="Direct link to How Neutrino measure this?" title="Direct link to How Neutrino measure this?">​</a></h3>
 <p>As many of us never heard of this term, block scheduling cost is mostly implicit.
 And one possible reason is the difficulty to measure,
 because GPU block scheduling is a hardware-behavior, i.e.,
@@ -51,7 +51,7 @@ First, in trace collection we collect three runtime statistics for every block b
 With <code>neutrino</code>, this is as simple as following toml:</p>
 <pre tabindex="0" class="codeBlockStandalone_MEMb thin-scrollbar language-toml codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#393A34;--prism-background-color:#f6f8fa"><code class="codeBlockLines_e6Vv"></code></pre>
 <p>Then, in post-trace analysis we can sort and analyze the scheduling per SM. Block scheduling cost can be estimated as the <u>start clock of next block - end clock of previous block</u>. You can check the code here.</p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="how-to-optimize">How to optimize?<a href="https://neutrino.github.io/blog/first-blog-post#how-to-optimize" class="hash-link" aria-label="Direct link to How to optimize?" title="Direct link to How to optimize?">​</a></h3>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="how-to-optimize">How to optimize?<a href="https://neutrino-gpu.github.io/blog/first-blog-post#how-to-optimize" class="hash-link" aria-label="Direct link to How to optimize?" title="Direct link to How to optimize?">​</a></h3>
 <p>The best way to verify the correctness of Neutrino observation is to optimize in the way suggested and see if the performance is improved.</p>
 <p>Here suggestion given by <code>neutrino</code> is to reduce the block scheduling cost and one straightforward solution is to issue less blocks.
 To verify this, we can use Persistent Kernel (like <a href="https://triton-lang.org/main/getting-started/tutorials/09-persistent-matmul.html#sphx-glr-getting-started-tutorials-09-persistent-matmul-py" target="_blank" rel="noopener noreferrer">this example</a>) that removes block scheduling cost via launching a persistent group of threads (at hardware capacity) and manage sequential part manually.</p>
@@ -65,16 +65,16 @@ Another lazier solution is to use <code>cuMemset</code> driver call which totall
 <p>🥳Well Done🥳
 With <code>neutrino</code>, we observe and accelerate a "mission impossible", a surprisingly easy <code>torch.zeros</code> performance issue that lies in our daily workflow!
 Moreover, the underlying <code>vectorized_elementwise</code> not just lies in <code>torch.zeros</code> but also <code>torch.ones/arange/exp</code> (actually any elementwise unary operator🫣) and even plenty of implicit call to flush implicit buffers🫥!</p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="conclusion">Conclusion<a href="https://neutrino.github.io/blog/first-blog-post#conclusion" class="hash-link" aria-label="Direct link to Conclusion" title="Direct link to Conclusion">​</a></h3>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="conclusion">Conclusion<a href="https://neutrino-gpu.github.io/blog/first-blog-post#conclusion" class="hash-link" aria-label="Direct link to Conclusion" title="Direct link to Conclusion">​</a></h3>
 <p>In this 5-mins journey, we walk through the basic debug experience of Neutrino with a simple example as one-line of <code>torch.zeros</code>, demonstrating <code>neutrino</code>'s amazing capability to discover performance issue from unexpected perspective.</p>
 <p>Finally I want to conclude with an inspiring question:</p>
 <blockquote>
 <p>Even such a simple line can have such a big issue, how many potential performance issue in current GPU can we explore and optimize with Neutrino?</p>
 </blockquote>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="further-reading">Further Reading<a href="https://neutrino.github.io/blog/first-blog-post#further-reading" class="hash-link" aria-label="Direct link to Further Reading" title="Direct link to Further Reading">​</a></h3>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="further-reading">Further Reading<a href="https://neutrino-gpu.github.io/blog/first-blog-post#further-reading" class="hash-link" aria-label="Direct link to Further Reading" title="Direct link to Further Reading">​</a></h3>
 <p>If you are interested in <code>neutrino</code>, take a look at:</p>
 <ul>
-<li><a href="https://neutrino.github.io/docs/intro">Introduction</a>: More detailed and insightful information of Neutrino</li>
+<li><a href="https://neutrino-gpu.github.io/docs/intro">Introduction</a>: More detailed and insightful information of Neutrino</li>
 <li>Probe Design: How tools like <code>block_sched</code> is designed and implemented!</li>
 <li>Our later blog!</li>
 </ul>]]></content>
