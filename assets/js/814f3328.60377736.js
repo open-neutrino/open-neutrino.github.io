@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkneutrino=self.webpackChunkneutrino||[]).push([[7472],{5513:e=>{e.exports=JSON.parse('{"title":"Recent posts","items":[{"title":"PyTorch One-Line Optimization","permalink":"/blog/first-blog-post","unlisted":false,"date":"2024-12-24T00:00:00.000Z"}]}')}}]);
